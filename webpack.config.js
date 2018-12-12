@@ -9,6 +9,11 @@ module.exports = (env, args) => ({
     entry: {
         main: ['babel-polyfill', './src/app.js']
     },
+    devServer: {
+        contentBase: path.join(__dirname, 'src'),
+        watchContentBase: true,
+        hot: true
+    },
     output: {
         path: path.join(__dirname, '/public'),
         filename: 'js/app.js'
@@ -18,7 +23,12 @@ module.exports = (env, args) => ({
           new UglifyJsPlugin({
             cache: true,
             parallel: true,
-            sourceMap: true // set to true if you want JS source maps
+            sourceMap: true,
+            uglifyOptions: {
+                compress: true,
+                mangle: true,
+                ie8: false
+            }
           }),
           new OptimizeCSSAssetsPlugin({})
         ]
@@ -41,7 +51,7 @@ module.exports = (env, args) => ({
                 ]
             },
             {
-                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
                 use: [{
                     loader: 'file-loader',
                     options: {
@@ -51,7 +61,7 @@ module.exports = (env, args) => ({
                 }]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|jpg|gif)$/,
                 use: [{
                     loader: 'file-loader',
                     options: {
@@ -59,6 +69,10 @@ module.exports = (env, args) => ({
                         outputPath: 'images/'
                     }
                 }]
+            },
+            {
+                test: /\.svg$/,
+                loader: 'svg-inline-loader'
             }
         ]
     },
